@@ -1,5 +1,5 @@
-    ------ Transformation ---
---Rename SSIS file Name With Date Time Stamp
+              ------ Transformation ---
+-- Rename SSIS file Name With Date Time Stamp
 DECLARE @FileName VARCHAR(MAX) = 'J:\16-Titanic Data.xlsx',
 @TimeStamp DATETIME = GETDATE()
 SELECT  CONCAT(
