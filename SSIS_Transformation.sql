@@ -8,4 +8,7 @@ SELECT  CONCAT(
 		        REPLACE(
 				     REPLACE(
 					      SUBSTRING(CONVERT(VARCHAR(50),@TimeStamp,120),1,19),' ','_'),':',''),'-',''),
-		                        '.xlsx') AS FileName_Timestamp
+		                        '.xlsx') AS FileName_DateTimestamp
+
+--  'J:\16-Titanic Data_20240216_211411.xlsx'
+--==================
