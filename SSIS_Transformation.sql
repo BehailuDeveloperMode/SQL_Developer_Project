@@ -13,7 +13,7 @@ SELECT  CONCAT(
 --  'J:\16-Titanic Data_20240216_211411.xlsx'
 
 --================== SQL Column To Rows UNPIVOT data.
-DECLARE @A INT = 1
+DECLARE @Email_Address INT = 1
 DECLARE @B INT = 5
 DECLARE @UnpivotTable TABLE
 (
@@ -25,11 +25,11 @@ Mar INT,
 Apr INT,
 May INT
 )
-WHILE(@A<=@B)
+WHILE(@Email_Address<=@B)
 BEGIN
 INSERT INTO @UnpivotTable
-SELECT CONCAT('Test_',@A),5000,6000,4000,7000,8000 
-SET @A = @A+1
+SELECT CONCAT('Test_',@Email_Address),5000,6000,4000,7000,8000 
+SET @Email_Address = @Email_Address+1
 END;
 --===============
 SELECT * FROM @UnpivotTable;
@@ -55,10 +55,20 @@ SELECT *
 (
 SELECT * 
 FROM @UnpivotTable) AS Row_Data  -- Origional declared Data.
-UNPIVOT
+  UNPIVOT
 (
-Salary FOR Month_Name IN(Jan,Feb,Mar,Apr,May)
+ Salary FOR Month_Name IN(Jan,Feb,Mar,Apr,May)  -- 
 )Unpivot_Imput
 ORDER BY 6;
 --==================================
-
+          -- To Get the first name and last name from the given email
+          -- Demo as Last Name and  Test as First Name
+DECLARE @Email_Add VARCHAR(50) = 'Test_Demo@domain.com' 
+SELECT SUBSTRING(                                
+        SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1),
+		  1,CHARINDEX('_',SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))-1) AS FName 
+,SUBSTRING(      
+           SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1),
+		      CHARINDEX('_',SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))+1,
+			    LEN(SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))) AS LName 
+--=======================================
