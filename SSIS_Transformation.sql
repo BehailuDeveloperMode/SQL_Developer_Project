@@ -72,3 +72,6 @@ SELECT SUBSTRING(
 		      CHARINDEX('_',SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))+1,
 			    LEN(SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))) AS LName 
 --=======================================
+                      -- Write a SQL Query to Delete Parent Child Rows
+					  -- Delete a row from a parent table
+					  --aso will delete from child table
