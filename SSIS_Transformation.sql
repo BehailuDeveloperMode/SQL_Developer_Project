@@ -70,8 +70,79 @@ SELECT SUBSTRING(
 ,SUBSTRING(      
            SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1),
 		      CHARINDEX('_',SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))+1,
-			    LEN(SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))) AS LName 
+			    LEN(SUBSTRING(@Email_Add,1,(CHARINDEX('@',@Email_Add))-1))) AS LName
+				
+--==================----------   Incremental data Load in SSIS using LookUP
+-- Create a Audit_log Table
+	 IF NOT EXISTS
+		 (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Audit_log]') AND type IN (N'U'))
+	BEGIN
+			CREATE TABLE Audit_log
+				 (
+				 Id INT IDENTITY,
+				 PakageName VARCHAR(200),
+				 TableName VARCHAR(200),
+				 RecordsInserted INT,
+				 RecordsUpdated INT,
+				 Dated DATETIME
+				 ) ON [PRIMARY]
+			  PRINT 'The table is Created'
+	END
+		ELSE
+			  PRINT 'The table is Exists'
+	 GO
+--====================  Create an Emails Table
+		IF NOT EXISTS
+		   (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Emails]') AND TYPE IN(N'U'))
+	BEGIN
+			CREATE TABLE Emails
+				 (
+				 Id INT NULL,
+				 First_Name VARCHAR(50) NULL,
+				 Last_Name VARCHAR(50) NULL,
+				 Email VARCHAR(50) NULL,
+				 Gender VARCHAR(50) NULL			
+				 ) ON [PRIMARY]
+			PRINT 'The table is Created'
+	END
+		ELSE
+		   PRINT 'The table is Exists'
+	 GO
+--============================  Create  ZZ_Emaile_Updated  Table   
+		IF NOT EXISTS
+		   (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ZZ_Emaile_Updated]') AND TYPE IN(N'U'))
+	BEGIN
+			CREATE TABLE ZZ_Emaile_Updated
+				 (
+				 Id INT NULL,
+				 First_Name VARCHAR(50) NULL,
+				 Last_Name VARCHAR(50) NULL,
+				 Email VARCHAR(50) NULL,
+				 Gender VARCHAR(50) NULL			
+				 ) ON [PRIMARY]
+			PRINT 'The table is Created'
+	END
+		ELSE
+		   PRINT 'The table is Exists'
+	 GO
+--===================================
+DECLARE @Updated INT
+UPDATE a
+SET a.First_Name = b.First_Name,
+    a.Last_Name = b.Last_Name,
+	a.Email = b.Email,
+	a.Gender = b.Gender
+FROM [dbo].[Emails]a
+INNER JOIN [dbo].[ZZ_Emaile_Updated] AS b
+ON a.Id = b.Id
+SET @Updated = @@ROWCOUNT
+INSERT INTO [dbo].[Audit_log]
+SELECT 'Package.dtsx','dbo.Emails', 0 , @Updated ,GETDATE() -- or
+--SELECT ? -- 0 
+--      ,? -- 1
+--	  ,? -- 2
+--	  ,@Updated 
+--	  ,GETDATE()
 --=======================================
-                      -- Write a SQL Query to Delete Parent Child Rows
-					  -- Delete a row from a parent table
-					  --aso will delete from child table
+
+
