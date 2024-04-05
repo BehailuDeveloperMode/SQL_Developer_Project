@@ -126,6 +126,26 @@ SELECT SUBSTRING(
 		   PRINT 'The table is Exists'
 	 GO
 --===================================
+		IF NOT EXISTS
+		   (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Archive]') AND TYPE IN(N'U'))
+	BEGIN
+			CREATE TABLE Archive
+				 (
+				 Id INT IDENTITY (100,1),
+				 Email_Id INT NOT NULL,
+				 First_Name VARCHAR(50) NULL,
+				 Last_Name VARCHAR(50) NULL,
+				 Email VARCHAR(50) NULL,
+				 Gender VARCHAR(50) NULL,
+				 Dataed DATETIME DEFAULT GETDATE(),
+				 Activity VARCHAR(25) NOT NULL,
+				 ) ON [PRIMARY]
+			PRINT 'The table is Created'
+	END
+		ELSE
+		   PRINT 'The table is Exists'
+	 GO
+--====================================
 DECLARE @Updated INT
 UPDATE a
 SET a.First_Name = b.First_Name,
@@ -144,5 +164,50 @@ SELECT 'Package.dtsx','dbo.Emails', 0 , @Updated ,GETDATE() -- or
 --	  ,@Updated 
 --	  ,GETDATE()
 --=======================================
-
-
+GO
+CREATE OR ALTER TRIGGER tr_Archaive ON [dbo].[Emails]
+FOR INSERT,UPDATE,DELETE
+AS
+SET NOCOUNT ON
+ IF EXISTS (SELECT 0 FROM deleted)
+  BEGIN
+  	  IF EXISTS (SELECT 0 FROM inserted)
+ BEGIN
+    INSERT INTO [dbo].[Archive]
+	(
+	Email_Id,
+	First_Name,
+	Last_Name,
+	Email,
+	Gender,
+	[Activity]
+	)
+		  SELECT d.Id AS Email_Id ,
+				   d.First_Name,
+				   d.Last_Name,
+				   d.Email,
+				   d.Gender,
+				  'Update' AS  Activity 
+		   FROM deleted d
+	 END
+    ELSE
+BEGIN
+INSERT INTO [dbo].[Archive]
+		(
+		Email_Id,
+		First_Name,
+		Last_Name,
+		Email,
+		Gender,
+		Activity 
+		)
+		SELECT d.Id AS Email_Id ,
+			   d.First_Name,
+			   d.Last_Name,
+			   d.Email ,
+			   d.Gender,
+			  'Delete'  AS Activity 
+		FROM deleted d
+END
+END
+--======================================
