@@ -191,8 +191,8 @@ SET NOCOUNT ON
 		   FROM deleted d
 	 END
     ELSE
-BEGIN
-INSERT INTO [dbo].[Archive]
+  BEGIN
+      INSERT INTO [dbo].[Archive]
 		(
 		Email_Id,
 		First_Name,
@@ -208,6 +208,25 @@ INSERT INTO [dbo].[Archive]
 			   d.Gender,
 			  'Delete'  AS Activity 
 		FROM deleted d
-END
+      END
+   END
+    ELSE
+  BEGIN
+  INSERT INTO [dbo].[Archive]
+		(
+		Email_Id,
+		First_Name,
+		Last_Name,
+		Email,
+		Gender,
+		Activity 
+		)
+		SELECT Ins.Id AS Email_Id ,
+			   Ins.First_Name,
+			   Ins.Last_Name,
+			   Ins.Email ,
+			   Ins.Gender,
+			  'Insert'  AS Activity 
+		FROM inserted Ins
 END
 --======================================
