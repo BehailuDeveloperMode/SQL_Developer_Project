@@ -240,6 +240,8 @@ GO
 -- To find a comma possition that occurrence on the thired possition. 
 DECLARE @DateString NVARCHAR(50) = 'Feb 28, 2024, 6,:26 PM';
 SELECT CHARINDEX(',', @dateString, CHARINDEX(',', @dateString) + 1) AS SecondCommaPosition;
+--SecondCommaPosition
+--13
 Go
 --================================
 -- Date with three comma in diffrent possition
@@ -248,5 +250,8 @@ DECLARE @StringValue INT = CHARINDEX(',', @dateString, CHARINDEX(',', @dateStrin
 DECLARE @DateValue DATE
 DECLARE @DateExtract VARCHAR(50) = SUBSTRING(@dateString,1,@StringValue)
 SET @DateValue = @DateExtract
-SELECT @DateValue
+SELECT @DateValue AS ExtractedDate
+--ExtractedDate
+--2024-02-28
+GO
 --=================================
