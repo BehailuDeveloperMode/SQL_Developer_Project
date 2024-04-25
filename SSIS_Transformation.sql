@@ -229,4 +229,24 @@ SET NOCOUNT ON
 			  'Insert'  AS Activity 
 		FROM inserted Ins
 END
---======================================
+--=================================
+-- To Extract a specific value from a string 
+DECLARE @dateString NVARCHAR(50) = 'Feb 28, 2024, 6:26 PM';
+SELECT SUBSTRING(@dateString, CHARINDEX(',', @dateString) + 2, 4) AS SecondCharacterAfterComma;
+--SecondCharacterAfterComma
+--2024
+--================================
+GO
+-- To find a comma possition that occurrence on the thired possition. 
+DECLARE @DateString NVARCHAR(50) = 'Feb 28, 2024, 6,:26 PM';
+SELECT CHARINDEX(',', @dateString, CHARINDEX(',', @dateString) + 1) AS SecondCommaPosition;
+Go
+--================================
+-- Date with three comma in diffrent possition
+DECLARE @dateString NVARCHAR(50) = 'Feb 28, 2024, 6,:26 PM';
+DECLARE @StringValue INT = CHARINDEX(',', @dateString, CHARINDEX(',', @dateString, CHARINDEX(',', @dateString) + 1) + 1)-4
+DECLARE @DateValue DATE
+DECLARE @DateExtract VARCHAR(50) = SUBSTRING(@dateString,1,@StringValue)
+SET @DateValue = @DateExtract
+SELECT @DateValue
+--=================================
