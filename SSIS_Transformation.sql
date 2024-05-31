@@ -255,3 +255,18 @@ SELECT @DateValue AS ExtractedDate
 --2024-02-28
 GO
 --=================================
+  -- This query helps us find the number of transactions performed within a specific 
+  --date interval. In our case, the interval is the last 7 days from today's date
+
+  SELECT COUNT(DISTINCT DATE) AS Count_Of_Transaction 
+      FROM vw_STG_FamilyLiving
+         WHERE DATE >=  -- BY USING SUB QUERY
+          (SELECT DISTINCT DATEADD(DAY, -7, GETDATE()) AS seven_days_ago FROM vw_STG_FamilyLiving)
+
+  --=================
+  -- The simplest form of the query can be solved using this streamlined version.
+  -- This clearly indicates that the provided query is a simplified and more efficient alternative to the original.
+  
+		SELECT COUNT(DISTINCT DATE) AS Count_Of_Transaction
+                  FROM vw_STG_FamilyLiving
+                         WHERE DATE >= DATEADD(DAY, -7, GETDATE());
