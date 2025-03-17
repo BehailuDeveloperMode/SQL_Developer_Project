@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "PpNKUon1Yec=",
+  "success": true,
+  "projectFilePath": "c:\\Users\\tbeha\\Behailu Tessema-(DeveloperMode.dev)\\Family Living Expenses - Personal Data - Documents\\Personal Data\\GitHub\\SQL_Developer_Project\\Ethiopian_ITDeveloper\\Ethiopian_ITDeveloper.sqlproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tbeha\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
+    "C:\\Users\\tbeha\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net46\\1.0.0\\microsoft.netframework.referenceassemblies.net46.1.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
