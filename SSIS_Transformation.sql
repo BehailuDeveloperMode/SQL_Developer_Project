@@ -335,3 +335,38 @@ FROM @View_STGFamilyLiving
 WHERE Date >= DATEADD(DAY, -7, CAST(GETDATE() AS DATE));
 
 --=================================================================
+--"Monthly Expense Analysis: Summarizing and Ordering Expenses by Calendar Month for Financial Reporting 
+--(Handling Scenarios Where Months Are Not in Proper Order)
+DECLARE @A TABLE
+(
+Month_Name NVARCHAR (30) NULL,
+Total_Expense money NULL
+) 
+INSERT INTO @A VALUES (N'April', 25945.0200)
+INSERT INTO @A VALUES (N'August', 31690.4800)
+INSERT INTO @A VALUES (N'December', 46148.1400)
+INSERT INTO @A VALUES (N'February', 39221.1700)
+INSERT INTO @A VALUES (N'January', 43964.3700)
+INSERT INTO @A VALUES (N'July', 32177.8400)
+INSERT INTO @A VALUES (N'June', 34524.0900)
+INSERT INTO @A VALUES (N'March', 36964.3100)
+INSERT INTO @A VALUES (N'May', 40534.9100)
+INSERT INTO @A VALUES (N'November', 36671.2400)
+INSERT INTO @A VALUES (N'October', 43412.4800)
+INSERT INTO @A VALUES (N'September', 38880.7400)
+SELECT * FROM @A
+ORDER BY 
+        CASE Month_Name
+        WHEN 'January' THEN 1 
+        WHEN 'February' THEN 2 
+        WHEN 'March' THEN 3 
+        WHEN 'April' THEN 4 
+        WHEN 'May' THEN 5 
+        WHEN 'June' THEN 6 
+        WHEN 'July' THEN 7 
+        WHEN 'August' THEN 8 
+        WHEN 'September' THEN 9 
+        WHEN 'October' THEN 10 
+        WHEN 'November' THEN 11 
+        WHEN 'December' THEN 12
+		END;
