@@ -1,4 +1,4 @@
-              ------ Transformation ---
+------ Transformation ---
 -- Rename SSIS file Name With Date Time Stamp
 DECLARE @FileName VARCHAR(MAX) = 'J:\16-Titanic Data.xlsx',
 @TimeStamp DATETIME = GETDATE()
@@ -10,8 +10,7 @@ SELECT  CONCAT(
 					      SUBSTRING(CONVERT(VARCHAR(50),@TimeStamp,120),1,19),' ','_'),':',''),'-',''),
 		                        '.xlsx') AS FileName_DateTimestamp;
 
---  'J:\16-Titanic Data_20240216_211411.xlsx'
-
+--'J:\16-Titanic Data_20240216_211411.xlsx'
 --================== SQL Column To Rows UNPIVOT data.
 DECLARE @Email_Address INT = 1
 DECLARE @B INT = 5
@@ -370,3 +369,67 @@ ORDER BY
         WHEN 'November' THEN 11 
         WHEN 'December' THEN 12
 		END;
+ --===================================
+ --HOW TO REMOVE DUPLICATE VALUES WITH GROUP BY If WE HAVE SMALL AMOUNT OF COLUMN
+DECLARE @GroupBy TABLE
+(
+Id INT PRIMARY KEY IDENTITY,
+first_name VARCHAR(50),
+last_name VARCHAR(50),
+city VARCHAR(100)
+)
+INSERT INTO @GroupBy (first_name, last_name, city)
+VALUES
+( 'John', 'Smith', 'Los Angeles'),
+('John', 'Smith', 'Los Angeles'),
+('John', 'Matthew', 'Houston'),
+('John', 'Matthew', 'Houston'),
+('Tom', 'Lee', 'Kansas');
+DROP TABLE  IF EXISTS #A 
+SELECT * INTO #A FROM @GroupBy
+SELECT * FROM #A
+DELETE FROM @GroupBy
+WHERE ID NOT IN(
+SELECT MAX(Id) FROM @GroupBy
+GROUP BY first_name, last_name, city
+)
+SELECT * FROM @GroupBy
+-- 2ND OPTION how to delete duplicate records 
+--without using goup by and having by using self join
+DELETE Table1 FROM #A Table1,#A Table2
+WHERE Table1.first_name = Table2.first_name 
+AND Table1.last_name = Table2.last_name  
+AND Table1.city =Table2.city
+AND Table1.Id > Table2.Id
+SELECT * FROM #A
+--======= sales For the same month This year Vs Last Year
+DECLARE @THISYEAR_LASTYEAR TABLE (
+    SALES_DT DATE PRIMARY KEY,
+    SALES_AMT DECIMAL(10,2) NOT NULL
+);
+INSERT INTO @THISYEAR_LASTYEAR (SALES_DT, SALES_AMT)
+VALUES
+('2025-02-01', 2500.00),
+('2025-01-01', 5200.00),
+('2024-12-01', 8300.00),
+('2024-11-01', 6200.00),
+('2024-10-01', 1900.00),
+('2024-09-01', 8700.00),
+('2024-08-01', 1100.00),
+('2024-07-01', 1200.00),
+('2024-06-01', 2500.00),
+('2024-05-01', 2400.00),
+('2024-04-01', 2300.00),
+('2024-03-01', 2700.00),
+('2024-02-01', 1700.00),
+('2024-01-01', 1800.00);
+--=================================
+SELECT 
+SALES_DT,
+SALES_AMT AS CURRENT_SALES,
+LAG(SALES_AMT,12)OVER(ORDER BY SALES_DT) AS PRIOR_PERIOD
+FROM @THISYEAR_LASTYEAR
+ORDER BY 1 DESC
+
+--=================================
+
