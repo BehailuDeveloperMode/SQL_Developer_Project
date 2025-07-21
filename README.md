@@ -1,7 +1,5 @@
-<div align="center">
-<img width="400" height="200" alt="7f29c93c-bf19-4ae7-9a83-bfc06fad7ed9" src="https://github.com/user-attachments/assets/54ad441a-3c04-4cb0-8ed7-8886cffcdd08" />
-</div>
 
+<img width="300" height="200" alt="7f29c93c-bf19-4ae7-9a83-bfc06fad7ed9" src="https://github.com/user-attachments/assets/54ad441a-3c04-4cb0-8ed7-8886cffcdd08" />
 
 SQL Data Transformation & Optimization.      
 
