@@ -430,6 +430,48 @@ SALES_AMT AS CURRENT_SALES,
 LAG(SALES_AMT,12)OVER(ORDER BY SALES_DT) AS PRIOR_PERIOD
 FROM @THISYEAR_LASTYEAR
 ORDER BY 1 DESC
-
+GO
 --=================================
+/*
+1. CEILING
+Rounds a number up to the nearest integer 
+(or nearest specified precision if you give a scale).
+Always rounds toward positive infinity — even 
+for negative numbers, it “moves up” on the number line.
+
+2. FLOOR
+Rounds a number down to the nearest integer 
+(or nearest specified precision if given).
+Always rounds toward negative infinity — even
+for negative numbers, it goes “further down”.
+*/
+--=======================================
+DECLARE @A FLOAT = 5467.22 --
+DECLARE @B FLOAT = -5467.22
+SELECT @A AS _Value, CEILING(@A) AS "CEILING", FLOOR(@A) AS "FLOOR"
+,CEILING(@B) AS "CEILING", FLOOR(@B) AS "FLOOR"
+SELECT @A AS _Valu, ROUND(@A,0) AS Pos_Round ,ROUND(@B,0) AS Neg_Round
+--====================================================
+DECLARE @C DECIMAL(16,2) = 5467.99 --
+DECLARE @D DECIMAL(16,2) = -5467.99
+SELECT @C AS _Value, CEILING(@C) AS "CEILING", FLOOR(@C) AS "FLOOR"
+,CEILING(@D) AS "CEILING", FLOOR(@D) AS "FLOOR"
+SELECT @C AS _Valu, ROUND(@C,0) AS Pos_Round ,ROUND(@D,0) AS Neg_Round
+--=========================
+-- Rounding to nearest whole number
+SELECT 123.456 AS NUM_ROUND, ROUND(123.456, 0)
+ AS 'ROUND(123.456, 0) - Rounding to nearest whole number' ;  -- 123
+-- Rounding to 2 decimal places
+SELECT 123.456 AS NUM_ROUND, ROUND(123.456, 2)
+AS 'ROUND(123.456, 2) - Rounding to 2 decimal places';  -- 123.46
+-- Rounding to 1 decimal place
+SELECT 123.456 AS NUM_ROUND, ROUND(123.456, 1) 
+AS 'ROUND(123.456, 1) - Rounding to 1 decimal place';  -- 123.5
+-- Rounding to tens (negative length)
+SELECT 123.456 AS NUM_ROUND, ROUND(123.456, -1) 
+AS 'ROUND(123.456, -1) - Rounding to tens (negative length)'; -- 120
+-- Truncating instead of rounding
+SELECT 123.456 AS NUM_ROUND, ROUND(123.456, 2, 1)
+AS 'ROUND(123.456, 2, 1) - Truncating instead of rounding'; -- 123.45
+--==============================
 
