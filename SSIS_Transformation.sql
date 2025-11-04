@@ -34,7 +34,8 @@ END;
 SELECT * FROM @UnpivotTable;
 --===========
 SELECT *
-,SUM(Salary)over(PARTITION BY Month_Name ORDER BY Month_Name) AS totalsalary_bymonth  --Total Salry for each particular month.
+,SUM(Salary)over(PARTITION BY Month_Name ORDER BY Month_Name) AS totalsalary_bymonth 
+--Total Salry for each particular month.
 ,CASE 
 WHEN Month_Name = 'Jan' THEN 1
     WHEN Month_Name = 'Feb' THEN 2
@@ -473,5 +474,65 @@ AS 'ROUND(123.456, -1) - Rounding to tens (negative length)'; -- 120
 -- Truncating instead of rounding
 SELECT 123.456 AS NUM_ROUND, ROUND(123.456, 2, 1)
 AS 'ROUND(123.456, 2, 1) - Truncating instead of rounding'; -- 123.45
---==============================
 
+--==============================
+DECLARE @Name NVARCHAR(150) = N'expense vs income';
+-- 1) positions of first and second spaces
+DECLARE @p1 int = CHARINDEX(' ', @Name);                  -- first space
+DECLARE @p2 int = CHARINDEX(' ', @Name, @p1 + 1);         -- second space
+-- Position of the 2nd space (0 if not found)
+SELECT @p2 AS SecondSpacePos;
+-- 2) Text up to the 2nd space (exclusive). If there is no 2nd space, return the whole string.
+SELECT UPPER(LEFT(@Name, CASE WHEN @p2 > 0 THEN @p2 - 1 ELSE LEN(@Name) END)) AS UpToSecondSpace;
+-- 3) The word between 1st and 2nd space
+SELECT SUBSTRING(@Name, @p1 + 1, CASE WHEN @p2 > 0 THEN @p2 - @p1 - 1 ELSE LEN(@Name) END) AS SecondWord;
+GO
+
+--========================================
+DECLARE @Name NVARCHAR(150) = N'expense  vs   income';
+-- 1) Normalize spaces (trim + collapse multiples)
+SET @Name = LTRIM(RTRIM(@Name));
+WHILE CHARINDEX('  ', @Name) > 0
+    SET @Name = REPLACE(@Name, '  ', ' ');
+-- 2) Uppercase everything
+SET @Name = UPPER(@Name);
+-- 3) Put "Vs" back to mixed case in all common positions
+SET @Name = REPLACE(@Name, ' VS ', ' Vs ');      -- middle
+IF @Name LIKE 'VS %'  SET @Name = 'Vs ' + SUBSTRING(@Name, 4, LEN(@Name));  -- start
+IF @Name LIKE '% VS'  SET @Name = LEFT(@Name, LEN(@Name)-3) + ' Vs';        -- end
+IF @Name = 'VS'       SET @Name = 'Vs';                                     -- only word
+SELECT @Name AS Title;  -- -> "EXPENSE Vs INCOME"
+GO
+
+--==========================================
+DECLARE @Name NVARCHAR(150) = N'expense vs income';
+DECLARE @p1 int = CHARINDEX(' ', @Name);           -- after word 1
+DECLARE @p2 int = CHARINDEX(' ', @Name, @p1 + 1);  -- after "vs"
+SELECT
+    UPPER(LEFT(@Name, @p1 - 1))             -- EXPENSE
+    + ' Vs '                                -- middle token normalized
+    + UPPER(SUBSTRING(@Name, @p2 + 1, 4000)) AS Title;  -- INCOME
+GO
+
+--=========================================
+DECLARE @Name NVARCHAR(150) = N'expense vs income';
+-- === Find the two spaces dynamically ===
+DECLARE @p1 int = CHARINDEX(' ', @Name);                -- position of 1st space
+DECLARE @p2 int = CHARINDEX(' ', @Name, @p1 + 1);       -- position of 2nd space
+-- === Split into three tokens based on those spaces ===
+DECLARE @w1 NVARCHAR(150) = LEFT(@Name, @p1 - 1);                      -- first word
+DECLARE @w2 NVARCHAR(150) = SUBSTRING(@Name, @p1 + 1, @p2 - @p1 - 1);  -- middle word (candidate for 'vs')
+DECLARE @w3 NVARCHAR(150) = SUBSTRING(@Name, @p2 + 1, 4000)           -- last word
+DECLARE @w4 CHAR = (' ');  -- FOR SPACE HOLDER
+-- === Normalize the middle token dynamically ===
+-- If the middle word is 'vs' in any casing, render it as 'Vs'; otherwise uppercase it.
+SELECT
+      UPPER(@w1)                                -- EXPENSE
+  + @w4
+  + CASE WHEN LOWER(@w2) = 'vs' THEN 'Vs'       -- Vs (dynamic detection)
+         ELSE UPPER(@w2) END
+  + @w4
+  + UPPER(@w3) AS Title;    
+  --===================================
+
+ 
